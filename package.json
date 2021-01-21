@@ -15,5 +15,13 @@
   "bugs": {
     "url": "https://github.com/Voltra/voltralang/issues"
   },
-  "homepage": "https://github.com/Voltra/voltralang#readme"
+  "homepage": "https://github.com/Voltra/voltralang#readme",
+  "dependencies": {
+    "moo": "^0.5.1",
+    "nearley": "^2.20.1"
+  },
+  "devDependencies": {
+    "@types/moo": "^0.5.3",
+    "@types/nearley": "^2.11.1"
+  }
 }
