@@ -1,0 +1,11 @@
+.env
+package-lock.json
+yarn.lock
+.brackets.json
+.DS_Store
+
+*.log*
+
+node_modules/
+.idea/
+.vscode/
