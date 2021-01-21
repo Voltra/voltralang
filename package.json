@@ -1,0 +1,19 @@
+{
+  "name": "voltralang",
+  "version": "1.0.0",
+  "description": "A toy language",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Voltra/voltralang.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Voltra/voltralang/issues"
+  },
+  "homepage": "https://github.com/Voltra/voltralang#readme"
+}
