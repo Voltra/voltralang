@@ -40,6 +40,9 @@ const operator = [
 	"&&=",
 	"||=",
 	"!!=", // unary boolean negate
+	"++", // unary pre/post increment
+	"--", // unary pre/post decrement
+	"**", // pow
 ];
 
 const keyword = [

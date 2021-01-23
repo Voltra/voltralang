@@ -5,6 +5,7 @@ yarn.lock
 .DS_Store
 
 *.log*
+*.ast
 
 node_modules/
 .idea/

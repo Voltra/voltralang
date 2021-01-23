@@ -6,6 +6,6 @@ elseBranch -> "else" _ expr 												{% data => ({ ...t.last(data), type: "el
 
 whileBlock -> "while" _ "(" _ expr _ ")"									{% t.afterMid %}
 
-if_stmt -> ifBranch (elseIfBranch):* (elseBranch):? 						{% data => ({ type: "if_stmt", ifBranch: t.first(data), elseIfBranches: t.mid(data), elseBranch: t.last(data) }) %}
+if_stmt -> ifBranch (elseIfBranch):* (elseBranch):? 						{% data => ({ type: "if_stmt", ifBranch: t.first(data), elseIfBranches: t.mid(data).map(id), elseBranch: t.last(data) }) %}
 while_stmt -> whileBlock _ expr 											{% data => ({ type: "while_stmt", condition: t.first(data), body: t.last(data) }) %}
 do_while_stmt -> "do" _ expr _ whileBlock 									{% data => ({ type: "do_while_stmt", condition: t.last(data), body: t.mid(data) }) %}

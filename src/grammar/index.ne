@@ -7,14 +7,21 @@
 @builtin "whitespace.ne" # `_` means arbitrary amount of whitespace
 # @builtin "number.ne" # `int`, `decimal`, and `percentage` number primitives
 
-@include "./sub/operators.ne" # operator
 @include "./sub/operations.ne" # operation, unary_operation, binary_operation
+@include "./sub/operators.ne" # operator
 @include "./sub/calls.ne" # func_call, arg_list, ufc, method_call
 @include "./sub/func.ne" # params, lambda, anonymous_func, computed_property, param_list
 @include "./sub/controlFlow.ne" # throw_stmt, if_stmt, while_stmt, do_while_stmt
 @include "./sub/specialLiterals.ne" # arrayLiteral, objectLiteral
-@include "./sub/destructuring.ne"
-@include "./sub/patternMatching.ne"
+@include "./sub/destructuring.ne" # array_destructuring, object_destructuring
+@include "./sub/patternMatching.ne" # match_expr
+
+
+####################################################################################
+# Atom
+####################################################################################
+program -> (_:? expr _:?):+ 												{% t.mapFirst(t.mid) %}
+
 
 ####################################################################################
 # Simple
@@ -60,6 +67,7 @@ expr -> literal																{% id %}
 	| func_call																{% id %}
 	| ufc																	{% id %}
 	| method_call															{% id %}
+	| match_expr															{% id %}
 	| statement 															{% id %}
 
 statement -> throw_stmt														{% id %}

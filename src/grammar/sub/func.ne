@@ -8,8 +8,4 @@ anonymous_func -> function_prefix params expr_block						{% data => ({ type: "an
 computed_property -> ident computed_body 								{% data => ({ type: "computed_property", property: t.first(data), body: t.last(data) }) %}
 
 param_list -> null 														{% () => ({ type: "param_list", params: [] }) %}
-		| ident
-			(
-				_ "," _ ident 											{% t.last %}
-			):+
-			(_ "," _):?													{% data => ({ type: "param_list", params: [t.first(data), ...t.last(data)] }) %}
+		| ident (_ "," _ ident):+ (_ "," _):?							{% data => ({ type: "param_list", params: [t.first(data), ...t.second(data).map(t.last)] }) %}

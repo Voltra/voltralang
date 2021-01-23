@@ -7,16 +7,27 @@ const path = require("path");
 
 const parser = new Parser(Grammar.fromCompiled(grammar));
 
+const isParseError = e => ["offset", "token"].every(key => key in e);
+
 const parse = content => {
 	parser.feed(content);
-	return parser.results;
+	return parser.results[0];
 };
 
 const parseFile = async ({ verbose, file, output }) => {
-	const content = await fs.readFile(file, "utf8");
-	const ast = parse(content);
-	const json = JSON.stringify(ast, null, 4);
-	await fs.writeFile(output, json, "utf8");
+	try{
+		const content = await fs.readFile(file, "utf8");
+		const ast = parse(content);
+		const json = JSON.stringify(ast, null, 4);
+		await fs.writeFile(output, json, "utf8");
+	}catch(e){
+		if(isParseError(e)){
+			const { token, offset } = e;
+			const { line, col, type } = token;
+			console.error(`Error at l${line}:c${col}, unexpected ${type} "${token}"`);
+		}else
+			console.error(e);
+	}
 };
 
 const main = argv => {
