@@ -15,6 +15,7 @@ const operator = [
 	"&", // bitwise and
 	"!", // logical not
 	"~", // bitwise not
+	"^", // xor
 	"+", // unary plus, plus
 	"-", // unary minus, minus
 	"*", // mult
@@ -25,10 +26,25 @@ const operator = [
 	"=", // equal
 	"::", // namespace separator
 	"@", // unified function call operator, annotation
+	"?", // for ternary and optional chaining,
+	"??", // null coalescing
+	"+=",
+	"-=",
+	"*=",
+	"/=",
+	"%=",
+	"&=",
+	"|=",
+	"^=",
+	"~=",
+	"&&=",
+	"||=",
+	"!!=", // unary boolean negate
 ];
 
 const keyword = [
-	"in",
+	"operator", // for operator declaration
+	"in", // pseudo operator : for key in obj, item in array
 	"if",
 	"while",
 	"else",
@@ -52,6 +68,13 @@ const keyword = [
 	"type",
 	"extends",
 	"implements",
+	"fn",
+	"function",
+	"throw",
+
+	"true",
+	"false",
+	"_",
 ].reduce((acc, kw) => ({ ...acc, [kw]: kw }), {});
 
 const tokens = {
