@@ -1,4 +1,8 @@
-import moo from "moo"
-import { tokens } from "./tokens"
+const moo = require("moo");
+const { tokens } = require("./tokens");
 
-export const lexer = moo.compile(tokens);
+const lexer = moo.compile(tokens);
+
+module.exports = {
+	lexer,
+};

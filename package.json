@@ -2,10 +2,11 @@
 	"name": "voltralang",
 	"version": "1.0.0",
 	"description": "A toy language",
-	"module": "index.js",
+	"main": "index.js",
 	"scripts": {
-		"gen:grammer": "nearleyc ./grammar/index.ne -o ./grammar/index.js",
-		"gen:railroad": "nearly-railroad ./src/grammar/index.ne -o ./docs/grammar.html"
+		"gen:grammar": "nearleyc ./src/grammar/index.ne -o ./src/grammar/index.js",
+		"gen:railroad": "nearly-railroad ./src/grammar/index.ne -o ./docs/grammar.html",
+		"parse": "node ./src/parser parse"
 	},
 	"repository": {
 		"type": "git",

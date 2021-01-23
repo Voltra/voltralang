@@ -1,4 +1,6 @@
-export const operator = [
+const moo = require("moo");
+
+const operator = [
 	".", // object property
 	"<", // less than, lcaret
 	">", // greater than, rcaret
@@ -25,7 +27,7 @@ export const operator = [
 	"@", // unified function call operator, annotation
 ];
 
-export const keyword = [
+const keyword = [
 	"in",
 	"if",
 	"while",
@@ -52,7 +54,7 @@ export const keyword = [
 	"implements",
 ].reduce((acc, kw) => ({ ...acc, [kw]: kw }), {});
 
-export const tokens = {
+const tokens = {
 	ws: {
 		match: /\s+/,
 		lineBreaks: true,
@@ -62,8 +64,8 @@ export const tokens = {
 		type: moo.keywords(keyword),
 	},
 	operator,
-	comment: /(\/\/.*?$|\/\*(?!\*\/)*?\*\/)/m,
-	numberLiteral: /(-?\d+(\.\d*)?|-?\d*\.)(e-?\d+)?/,
+	comment: /(?:\/\/.*?$|\/\*(?!\*\/)*?\*\/)/,
+	numberLiteral: /(?:-?\d+(?:\.\d*)?|-?\d*\.)(?:e-?\d+)?/,
 	stringLiteral: [
 		{
 			match:  /"(?:\\["\\rn]|[^"\\])*?"/,
@@ -83,7 +85,7 @@ export const tokens = {
 	colon: ":",
 };
 
-export const shouldPass = {
+const shouldPass = {
 	comment: [
 		"// je suis un // commentaire",
 		"//TODO: aze",
@@ -108,4 +110,12 @@ export const shouldPass = {
 		"-1e5",
 		"-1e-5",
 	],
+};
+
+
+module.exports = {
+	operator,
+	keyword,
+	tokens,
+	shouldPass,
 };

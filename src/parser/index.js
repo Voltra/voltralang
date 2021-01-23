@@ -1,12 +1,13 @@
-import { Parser, Grammar } from "nearly"
-import grammar from "../grammar"
-import yargs from "yargs/yargs"
-import { hideBin } from "yargs/helpers"
-import fs from "fs-extra"
+const { Parser, Grammar } = require("nearley");
+const grammar = require("../grammar");
+const yargs = require("yargs/yargs");
+const { hideBin } = require("yargs/helpers");
+const fs = require("fs-extra");
+const path = require("path");
 
-export const parser = new Parser(Grammar.fromCompiled(grammar));
+const parser = new Parser(Grammar.fromCompiled(grammar));
 
-export const parse = content => {
+const parse = content => {
 	parser.feed(content);
 	return parser.results;
 };
@@ -14,7 +15,8 @@ export const parse = content => {
 const parseFile = async ({ verbose, file, output }) => {
 	const content = await fs.readFile(file, "utf8");
 	const ast = parse(content);
-	await fs.writeFile(output, ast, "utf8");
+	const json = JSON.stringify(ast, null, 4);
+	await fs.writeFile(output, json, "utf8");
 };
 
 const main = argv => {
@@ -27,15 +29,24 @@ const main = argv => {
 		}).positional("output", {
 			describe: "the output file",
 			default: "voltra.ast",
-		});
+		}).coerce(["file", "output"], path.resolve);
 	}, parseFile)
+	.strictCommands()
+	.demandCommand(1, "You need at least one command to execute")
 	.option("verbose", {
 		alias: "v",
 		type: "boolean",
 		description: "Run with verbose logging",
-	});
+	})
+	.help()
+	.argv;
 };
 
 if(require.main === module){
 	main(process.argv);
 }
+
+module.exports = {
+	parser,
+	parse,
+};
