@@ -8,9 +8,9 @@ unary_operation ->
 	| "~" expr 																{% t.unaryOp("bitwise_neg") %}
 	| "!!=" fully_qualified_name 											{% t.unaryOp("unary_neg_eq") %}
 	| "++" fully_qualified_name 											{% t.unaryOp("pre_increment") %}
-	| fully_qualified_name "++" 											{% t.unaryOp("post_increment") %}
+	| fully_qualified_name "++" 											{% t.unaryOpPost("post_increment") %}
 	| "--" fully_qualified_name 											{% t.unaryOp("pre_decrement") %}
-	| fully_qualified_name "--" 											{% t.unaryOp("post_decrement") %}
+	| fully_qualified_name "--" 											{% t.unaryOpPost("post_decrement") %}
 
 binary_operation ->
 	expr __ "in" __ expr 													{% t.binaryOp("in") %}

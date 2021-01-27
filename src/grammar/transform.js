@@ -16,6 +16,11 @@ module.exports = {
 		op,
 		expr,
 	}),
+	unaryOpPost: type => ([expr, op]) => ({
+		type,
+		op,
+		expr
+	}),
 	value: x => () => x,
 	mapFirst: fn => arr => itemAt(arr, 0).map(fn),
 	mapSecond: fn => arr => itemAt(arr, 1).map(fn),

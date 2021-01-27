@@ -24,7 +24,7 @@
 ####################################################################################
 # Atom
 ####################################################################################
-program -> _nl:? (expr _nl):*												{% t.mapSecond(t.first) %}
+program -> _nl (expr _nl):+													{% t.mapSecond(t.first) %}
 
 
 
@@ -65,10 +65,7 @@ literal -> numberLiteral													{% id %}
 
 operator_name -> "operator\"" operator "\""									{% data => ({ type: "operator_name", operator: t.mid(data) }) %}
 
-fully_qualified_name -> ident 												{% id %}
-	# | (ident "::"):+ ident													{% data => ({ type: "fqn", path: [...t.first(data).map(id), t.last(data)] }) %}
-	| (ident "::"):+ (ident | operator_name) 								{% data => ({ type: "fqn", path: [...t.first(data).map(id), t.last(data)] }) %}
-	#TODO: check if there's a need to discern operator
+fully_qualified_name -> (ident "::"):* (ident | operator_name) 				{% data => ({ type: "fqn", path: [...t.mapFirst(id)(data), t.last(data)] }) %}
 
 
 
@@ -94,9 +91,9 @@ statement -> throw_stmt														{% id %}
 
 
 paren_expr -> "(" _nl expr _nl ")"											{% data => ({ type: "paren_expr", expr: t.mid(data) }) %}
-expr_block -> "{" _nl expr:* _nl "}"										{% data => ({ type: "expr_block", exprs: t.mid(data) }) %}
+expr_block -> "{" __nl expr:* __nl "}"										{% data => ({ type: "expr_block", exprs: t.mid(data) }) %}
 expression_body -> __ "=>" _nl expr											{% data => ({ type: "expression_body", body: t.last(data) }) %}
 computed_body -> __ "~>" _nl expr											{% data => ({ type: "computed_body", body: t.last(data) }) %}
 
-ternary -> expr _nl "?" _ expr _nl ":" _ expr								{% data => ({ type: "ternary", condition: t.first(data), ifTrue: t.mid(data), ifFalse: t.last(data) }) %}
+ternary -> expr __nl "?" __ expr __nl ":" __ expr							{% data => ({ type: "ternary", condition: t.first(data), ifTrue: t.mid(data), ifFalse: t.last(data) }) %}
 

@@ -77,7 +77,7 @@ const parseFile = async ({ verbose, file, output }) => {
 			}else
 				console.error(token);
 		}else if(e instanceof AmbiguousGrammar){
-			await writeJson(parser.table, `${output}.error.json`, true);
+			await writeJson(parser.table.map(x => Object.keys(x.completed)), `${output}.error.json`, true);
 
 			e.results.forEach(async (ast, i) => {
 				await writeJson(ast, `${output}.${i}.error.json`);
