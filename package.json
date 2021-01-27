@@ -5,7 +5,7 @@
 	"main": "index.js",
 	"scripts": {
 		"gen:grammar": "nearleyc ./src/grammar/index.ne -o ./src/grammar/index.js",
-		"gen:railroad": "nearly-railroad ./src/grammar/index.ne -o ./docs/grammar.html",
+		"gen:railroad": "nearley-railroad ./src/grammar/index.ne -o ./docs/grammar.html",
 		"parse": "node ./src/parser parse"
 	},
 	"repository": {

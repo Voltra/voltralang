@@ -4,9 +4,12 @@
 %}
 
 @lexer lexer
-@builtin "whitespace.ne" # `_` means arbitrary amount of whitespace
-# @builtin "number.ne" # `int`, `decimal`, and `percentage` number primitives
 
+
+
+####################################################################################
+# Sub parts
+####################################################################################
 @include "./sub/operations.ne" # operation, unary_operation, binary_operation
 @include "./sub/operators.ne" # operator
 @include "./sub/calls.ne" # func_call, arg_list, ufc, method_call
@@ -17,10 +20,23 @@
 @include "./sub/patternMatching.ne" # match_expr
 
 
+
 ####################################################################################
 # Atom
 ####################################################################################
-program -> (_:? expr _:?):+ 												{% t.mapFirst(t.mid) %}
+program -> _nl:? (expr _nl):*												{% t.mapSecond(t.first) %}
+
+
+
+####################################################################################
+# Whitespaces
+####################################################################################
+_ -> %WS:*
+__ -> %WS:+
+
+_nl -> (%WS|%NL):*
+__nl -> (%WS|%NL):+
+
 
 
 ####################################################################################
@@ -28,7 +44,7 @@ program -> (_:? expr _:?):+ 												{% t.mapFirst(t.mid) %}
 ####################################################################################
 ident -> %ident																{% id %}
 numberLiteral -> %numberLiteral												{% id %}
-stringLiteral -> %stringLiteral												{% id %}
+stringLiteral -> %stringLiteral 											{% id %}
 booleanLiteral -> ("true"|"false") 											{% id %}
 function_prefix -> ("fn"|"function") 										{% id %}
 
@@ -47,10 +63,11 @@ literal -> numberLiteral													{% id %}
 	| arrayLiteral 															{% id %}
 	| objectLiteral 														{% id %}
 
-operator_name -> "operator" operator										{% data => ({ type: "operator_name", operator: t.last(data) }) %}
+operator_name -> "operator\"" operator "\""									{% data => ({ type: "operator_name", operator: t.mid(data) }) %}
 
 fully_qualified_name -> ident 												{% id %}
-	| (ident "::" {% id %}):+ (ident {% id %} | operator_name {% id %}) 	{% data => ({ type: "fqn", path: [...t.first(data), t.last(data)] }) %}
+	# | (ident "::"):+ ident													{% data => ({ type: "fqn", path: [...t.first(data).map(id), t.last(data)] }) %}
+	| (ident "::"):+ (ident | operator_name) 								{% data => ({ type: "fqn", path: [...t.first(data).map(id), t.last(data)] }) %}
 	#TODO: check if there's a need to discern operator
 
 
@@ -76,10 +93,10 @@ statement -> throw_stmt														{% id %}
 	| do_while_stmt															{% id %}
 
 
-paren_expr -> "(" _ expr _ ")"												{% data => ({ type: "paren_expr", expr: t.mid(data) }) %}
-expr_block -> "{" _ expr:+ _ "}"											{% data => ({ type: "expr_block", exprs: t.mid(data) }) %}
-expression_body -> _ "=>" _ expr											{% data => ({ type: "expression_body", body: t.last(data) }) %}
-computed_body -> _ "~>" _ expr												{% data => ({ type: "computed_body", body: t.last(data) }) %}
+paren_expr -> "(" _nl expr _nl ")"											{% data => ({ type: "paren_expr", expr: t.mid(data) }) %}
+expr_block -> "{" _nl expr:* _nl "}"										{% data => ({ type: "expr_block", exprs: t.mid(data) }) %}
+expression_body -> __ "=>" _nl expr											{% data => ({ type: "expression_body", body: t.last(data) }) %}
+computed_body -> __ "~>" _nl expr											{% data => ({ type: "computed_body", body: t.last(data) }) %}
 
-ternary -> expr _ "?" _ expr _ ":" _ expr									{% data => ({ type: "ternary", condition: t.first(data), ifTrue: t.mid(data), ifFalse: t.last(data) }) %}
+ternary -> expr _nl "?" _ expr _nl ":" _ expr								{% data => ({ type: "ternary", condition: t.first(data), ifTrue: t.mid(data), ifFalse: t.last(data) }) %}
 

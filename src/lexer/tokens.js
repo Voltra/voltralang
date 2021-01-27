@@ -81,8 +81,9 @@ const keyword = [
 ].reduce((acc, kw) => ({ ...acc, [kw]: kw }), {});
 
 const tokens = {
-	ws: {
-		match: /\s+/,
+	WS: /[ \t]/,
+	NL: {
+		match: /\r?\n/,
 		lineBreaks: true,
 	},
 	ident: {
@@ -91,15 +92,12 @@ const tokens = {
 	},
 	operator,
 	comment: /(?:\/\/.*?$|\/\*(?!\*\/)*?\*\/)/,
-	numberLiteral: /(?:-?\d+(?:\.\d*)?|-?\d*\.)(?:e-?\d+)?/,
+	numberLiteral: /(?:-?\d+(?:\.\d*?)?|-?\d*?\.)(?:e-?\d+)?/,
 	stringLiteral: [
 		{
-			match:  /"(?:\\["\\rn]|[^"\\])*?"/,
+			match:  /"(?:\\["rn]|[^"\\])*?"/,
 			lineBreaks: false,
 			value: str => str.slice(1, -1),
-		},{
-			match: /R"\(.*?\)"/,
-			lineBreaks: true,
 		},
 	],
 	lparen: "(",

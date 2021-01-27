@@ -1,4 +1,4 @@
-params -> "(" _ param_list _ ")" 										{% t.mid %}
+params -> "(" (_nl param_list _nl):? ")" 								{% t.mid %}
 		| ident															{% t.id %}
 
 lambda -> params expression_body										{% data => ({ type: "lambda", params: t.first(data), body: t.last(data) }) %}

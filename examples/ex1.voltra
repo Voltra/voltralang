@@ -1,5 +1,7 @@
 aze = 3
 bxe = "1234"
 
+aze += 2
+
 boolean = true
-!!= boolean
+!!=boolean

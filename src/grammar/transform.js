@@ -17,7 +17,8 @@ module.exports = {
 		expr,
 	}),
 	value: x => () => x,
-	mapFirst: fn => arr => fn(arr[0][0]),
+	mapFirst: fn => arr => itemAt(arr, 0).map(fn),
+	mapSecond: fn => arr => itemAt(arr, 1).map(fn),
 
 	// Partial transforms
 	at: i => arr => itemAt(arr, i),
