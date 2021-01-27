@@ -77,6 +77,7 @@ const keyword = [
 
 	"true",
 	"false",
+	"null",
 	"_",
 ].reduce((acc, kw) => ({ ...acc, [kw]: kw }), {});
 

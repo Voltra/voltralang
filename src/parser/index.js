@@ -62,6 +62,14 @@ const writeJson = async (jsonable, output, circular = false) => {
 	await fs.writeFile(output, json, "utf8");
 };
 
+const dumpTable = async output => {
+	await writeJson(
+		parser.table.map(x => Object.keys(x.completed)),
+		`${output}.error.json`,
+		true
+	);
+};
+
 const parseFile = async ({ verbose, file, output }) => {
 	try{
 		const content = await fs.readFile(file, "utf8");
@@ -77,8 +85,8 @@ const parseFile = async ({ verbose, file, output }) => {
 			}else
 				console.error(token);
 		}else if(e instanceof AmbiguousGrammar){
-			await writeJson(parser.table.map(x => Object.keys(x.completed)), `${output}.error.json`, true);
-
+			await dumpTable(output);
+			
 			e.results.forEach(async (ast, i) => {
 				await writeJson(ast, `${output}.${i}.error.json`);
 			});

@@ -15,7 +15,7 @@
 @include "./sub/calls.ne" # func_call, arg_list, ufc, method_call
 @include "./sub/func.ne" # params, lambda, anonymous_func, computed_property, param_list
 @include "./sub/controlFlow.ne" # throw_stmt, if_stmt, while_stmt, do_while_stmt
-@include "./sub/specialLiterals.ne" # arrayLiteral, objectLiteral
+@include "./sub/specialLiterals.ne" # arrayLiteral, objectLiteral, nullLiteral
 @include "./sub/destructuring.ne" # array_destructuring, object_destructuring
 @include "./sub/patternMatching.ne" # match_expr
 
@@ -57,8 +57,9 @@ function_prefix -> ("fn"|"function") 										{% id %}
 functionLiteral -> anonymous_func | lambda									{% id %}
 
 literal -> numberLiteral													{% id %}
-	| booleanLiteral
+	| booleanLiteral														{% id %}
 	| stringLiteral															{% id %}
+	| nullLiteral															{% id %}
 	| functionLiteral														{% id %}
 	| arrayLiteral 															{% id %}
 	| objectLiteral 														{% id %}
