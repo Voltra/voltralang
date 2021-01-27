@@ -1,0 +1,14 @@
+function(){}
+
+() => {}
+
+(a, b) => a + b
+
+x ~> abcd + cdef
+
+
+function(
+	veryLongParams,
+	asAlwaysLmao,
+	pleaseTrailing,
+){}

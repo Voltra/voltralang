@@ -79,6 +79,7 @@ const keyword = [
 	"false",
 	"null",
 	"_",
+	"this",
 ].reduce((acc, kw) => ({ ...acc, [kw]: kw }), {});
 
 const tokens = {

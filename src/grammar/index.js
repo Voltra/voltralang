@@ -140,6 +140,7 @@ var grammar = {
     {"name": "operator", "symbols": ["operator$string$25"], "postprocess": id},
     {"name": "func_call", "symbols": ["expr", "func_args"], "postprocess": data => ({ type: "func_call", func: t.first(data), args: t.last(data), })},
     {"name": "func_args", "symbols": [{"literal":"("}, "_", "arg_list", "_", {"literal":")"}], "postprocess": t.mid},
+    {"name": "arg_list", "symbols": [], "postprocess": () => ({ type: "arg_list", args: [] })},
     {"name": "arg_list$ebnf$1", "symbols": []},
     {"name": "arg_list$ebnf$1$subexpression$1", "symbols": ["_", {"literal":","}, "__nl", "expr"]},
     {"name": "arg_list$ebnf$1", "symbols": ["arg_list$ebnf$1", "arg_list$ebnf$1$subexpression$1"], "postprocess": function arrpush(d) {return d[0].concat([d[1]]);}},

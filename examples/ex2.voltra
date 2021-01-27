@@ -1,0 +1,11 @@
+myFunc(arg1, arg2)
+myObj.myMeth(arg1)
+myObj[getMethName()]()
+myObj@myFuncOrMeth()
+
+
+myFunc(
+	withVeryLongParamNames,
+	andNotJustOne,
+	alsoTrailingComma,
+)
