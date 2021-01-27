@@ -3,3 +3,13 @@ $json
 R"(
 	multiline string lol
 	)"
+
+(
+	json
+)
+
+
+{
+	json
+	abcde
+}

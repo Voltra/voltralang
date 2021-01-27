@@ -105,6 +105,8 @@ const tokens = {
 	rparen: ")",
 	lbracket: "[",
 	rbracket: "]",
+	lcurly: "{",
+	rcurly: "}",
 	comma: ",",
 	semi: ";",
 	colon: ":",

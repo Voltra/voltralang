@@ -10,7 +10,7 @@ const parser = new Parser(
 	{ keepHistory: true, },
 );
 
-const isParseError = e => ["offset", "token"].every(key => key in e);
+const isParseError = e => ["offset", "token"].every(key => key in e) && !!e.token;
 const hasPosition = token => ["line", "col", "type"].every(key => key in token);
 
 const AmbiguousGrammar = class extends Error{
@@ -86,7 +86,7 @@ const parseFile = async ({ verbose, file, output }) => {
 				console.error(token);
 		}else if(e instanceof AmbiguousGrammar){
 			await dumpTable(output);
-			
+
 			e.results.forEach(async (ast, i) => {
 				await writeJson(ast, `${output}.${i}.error.json`);
 			});
