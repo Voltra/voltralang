@@ -5,11 +5,11 @@ const itemAt = (arr, i) => arr[asInt(i)];
 
 module.exports = {
 	// Full transforms
-	binaryOp: type => ([lhs, , op, , rhs]) => ({
+	binaryOp: type => arr => ({
 		type,
-		op,
-		lhs,
-		rhs,
+		op: itemAt(arr, 2),
+		lhs: itemAt(arr, 0),
+		rhs: itemAt(arr, 4),
 	}),
 	unaryOp: type => ([op, expr]) => ({
 		type,
