@@ -1,12 +1,12 @@
 @include "./calls.ne" # func_call, arg_list, ufc, method_call
 
 operation -> assign_expr 														{% id %}
-	# | sum_expr 																	{% id %}
-	# | logical_expr 																{% id %}
-	# | spe_expr 																	{% id %}
-	# | func_call																	{% id %}
-	# | ufc																		{% id %}
-	# | method_call																{% id %}
+	| sum_expr 																	{% id %}
+	| logical_expr 																{% id %}
+	| spe_expr 																	{% id %}
+	| func_call																	{% id %}
+	| ufc																		{% id %}
+	| method_call																{% id %}
 
 
 assign_expr ->
@@ -46,7 +46,7 @@ bit_expr ->
 	bit_expr __nl "&" __ unary_expr 											{% t.binaryOp("bitwise_and") %}
 	| bit_expr __nl "|" __ unary_expr 											{% t.binaryOp("bitwise_or") %}
 	| bit_expr __nl "^" __ unary_expr 											{% t.binaryOp("bitwise_xor") %}
-	| "~" bit_expr 																{% t.unaryOp("bitwise_neg") %}
+	| "~" unary_expr 															{% t.unaryOp("bitwise_neg") %}
 	| unary_expr 																{% id %}
 
 unary_expr ->
@@ -54,7 +54,6 @@ unary_expr ->
 	| "--" fully_qualified_name 												{% t.unaryOp("pre_decrement") %}
 	| fully_qualified_name "++" 												{% t.unaryOpPost("post_increment") %}
 	| fully_qualified_name "--" 												{% t.unaryOpPost("post_decrement") %}
-	| value_expr 																{% id %}
 
 logical_expr ->
 	logical_expr __nl "&&" __ value_expr 										{% t.binaryOp("land") %}
@@ -66,7 +65,6 @@ logical_expr ->
 	| logical_expr __nl "<=" __ value_expr 										{% t.binaryOp("leq") %}
 	| logical_expr __nl ">=" __ value_expr 										{% t.binaryOp("geq") %}
 	| "!" logical_expr 															{% t.unaryOp("neg") %}
-	| value_expr																{% id %}
 
 spe_expr ->
 	value_expr __nl "in" __ value_expr 											{% t.binaryOp("in") %}

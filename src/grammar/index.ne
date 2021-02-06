@@ -65,7 +65,8 @@ literal -> numberLiteral													{% id %}
 
 operator_name -> "operator\"" operator "\""									{% data => ({ type: "operator_name", operator: t.mid(data) }) %}
 
-fully_qualified_name -> (ident "::"):* (ident | operator_name) 				{% data => ({ type: "fqn", path: [...t.mapFirst(id)(data), t.last(data)] }) %}
+fully_qualified_name -> (ident "::"):*
+	(ident {% id %} | operator_name {% id %}) 								{% data => ({ type: "fqn", path: [...t.mapFirst(t.first)(data), t.last(data)] }) %}
 
 
 
