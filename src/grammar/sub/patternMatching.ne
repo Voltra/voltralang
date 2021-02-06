@@ -1,6 +1,6 @@
 match_expr -> "match" "(" _nl expr _nl ")" matchBody 									{% data => ({ type: "match_stmt", matched: t.mid(data), body: t.last(data) }) %}
 
-matchBody -> "{" __nl matchBranch:+ matchDefaultBranch __nl "}" 						{% data => ({ type: "match_body", branches: t.beforeMid(data), defaultBranch: t.afterMid(data) }) %}
+matchBody -> "{" __nl matchBranch:+ matchDefaultBranch:? __nl "}" 						{% data => ({ type: "match_body", branches: t.beforeMid(data), defaultBranch: t.afterMid(data) }) %}
 
 matchDefaultBranch -> "_" matchBranchBody 												{% data => ({ type: "match_default_branch", body: t.last(data) }) %}
 

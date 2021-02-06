@@ -12,7 +12,6 @@
 ####################################################################################
 @include "./sub/operations.ne" # operation
 @include "./sub/operators.ne" # operator
-@include "./sub/calls.ne" # func_call, arg_list, ufc, method_call
 @include "./sub/func.ne" # params, lambda, anonymous_func, computed_property, param_list
 @include "./sub/controlFlow.ne" # throw_stmt, if_stmt, while_stmt, do_while_stmt
 @include "./sub/specialLiterals.ne" # arrayLiteral, objectLiteral, nullLiteral
@@ -24,7 +23,7 @@
 ####################################################################################
 # Atom
 ####################################################################################
-program -> (_nl expr):+ _nl													{% t.mapFirst(t.last) %}
+file -> (_nl expr):+ _nl													{% t.mapFirst(t.last) %}
 
 
 
@@ -78,10 +77,6 @@ expr -> literal																{% id %}
 	| expr_block															{% id %}
 	| paren_expr															{% id %}
 	| operation																{% id %}
-	| ternary																{% id %}
-	| func_call																{% id %}
-	| ufc																	{% id %}
-	| method_call															{% id %}
 	| match_expr															{% id %}
 	| statement 															{% id %}
 
@@ -95,6 +90,3 @@ paren_expr -> "(" _nl expr _nl ")"											{% data => ({ type: "paren_expr", e
 expr_block -> "{" _nl (expr __nl):* "}"										{% data => ({ type: "expr_block", exprs: t.at(2)(data).map(t.first) }) %}
 expression_body -> __ "=>" _nl expr											{% data => ({ type: "expression_body", body: t.last(data) }) %}
 computed_body -> __ "~>" _nl expr											{% data => ({ type: "computed_body", body: t.last(data) }) %}
-
-ternary -> expr __nl "?" __ expr __nl ":" __ expr							{% data => ({ type: "ternary", condition: t.first(data), ifTrue: t.mid(data), ifFalse: t.last(data) }) %}
-
