@@ -1,10 +1,10 @@
-match_expr -> "match" "(" _nl expr _nl ")" matchBody 									{% data => ({ type: "match_stmt", matched: t.mid(data), body: t.last(data) }) %}
+match_expr -> "match" "(" _nl value_expr _nl ")" matchBody 								{% data => ({ type: "match_stmt", matched: t.mid(data), body: t.last(data) }) %}
 
 matchBody -> "{" __nl matchBranch:+ matchDefaultBranch:? __nl "}" 						{% data => ({ type: "match_body", branches: t.beforeMid(data), defaultBranch: t.afterMid(data) }) %}
 
 matchDefaultBranch -> "_" matchBranchBody 												{% data => ({ type: "match_default_branch", body: t.last(data) }) %}
 
-matchBranchBody -> __ "->" __ expr 														{% t.last %}
+matchBranchBody -> __ "->" __ value_expr 												{% t.last %}
 
 matchBranch -> matchStructure matchBranchBody __nl 										{% data => ({ type: "match_branch", body: t.mid(data), structure: matchStructure }) %}
 

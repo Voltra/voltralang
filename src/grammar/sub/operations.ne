@@ -1,13 +1,12 @@
 @include "./calls.ne" # func_call, arg_list, ufc, method_call
 
 operation -> assign_expr 														{% id %}
-	| pow_expr 																	{% id %}
+	| sum_expr 																	{% id %}
 	| logical_expr 																{% id %}
 	| spe_expr 																	{% id %}
 	| func_call																	{% id %}
 	| ufc																		{% id %}
 	| method_call																{% id %}
-	| expr 																		{% id %}
 
 
 assign_expr ->
@@ -48,28 +47,28 @@ bit_expr ->
 	| bit_expr __nl "|" __ unary_expr 											{% t.binaryOp("bitwise_or") %}
 	| bit_expr __nl "^" __ unary_expr 											{% t.binaryOp("bitwise_xor") %}
 	| "~" bit_expr 																{% t.unaryOp("bitwise_neg") %}
-	| unary_expr
+	| unary_expr 																{% id %}
 
 unary_expr ->
 	"++" fully_qualified_name 													{% t.unaryOp("pre_increment") %}
 	| "--" fully_qualified_name 												{% t.unaryOp("pre_decrement") %}
 	| fully_qualified_name "++" 												{% t.unaryOpPost("post_increment") %}
 	| fully_qualified_name "--" 												{% t.unaryOpPost("post_decrement") %}
-	| operation 																{% id %}
+	| value_expr 																{% id %}
 
 logical_expr ->
-	logical_expr __nl "&&" __ operation 										{% t.binaryOp("land") %}
-	| logical_expr __nl "||" __ operation  										{% t.binaryOp("lor") %}								
-	| logical_expr __nl "==" __ operation 										{% t.binaryOp("eq") %}
-	| logical_expr __nl "!=" __ operation 										{% t.binaryOp("neq") %}
-	| logical_expr __nl "<" __ operation 										{% t.binaryOp("lt") %}
-	| logical_expr __nl ">" __ operation 										{% t.binaryOp("gt") %}
-	| logical_expr __nl "<=" __ operation 										{% t.binaryOp("leq") %}
-	| logical_expr __nl ">=" __ operation 										{% t.binaryOp("geq") %}
+	logical_expr __nl "&&" __ value_expr 										{% t.binaryOp("land") %}
+	| logical_expr __nl "||" __ value_expr  									{% t.binaryOp("lor") %}								
+	| logical_expr __nl "==" __ value_expr 										{% t.binaryOp("eq") %}
+	| logical_expr __nl "!=" __ value_expr 										{% t.binaryOp("neq") %}
+	| logical_expr __nl "<" __ value_expr 										{% t.binaryOp("lt") %}
+	| logical_expr __nl ">" __ value_expr 										{% t.binaryOp("gt") %}
+	| logical_expr __nl "<=" __ value_expr 										{% t.binaryOp("leq") %}
+	| logical_expr __nl ">=" __ value_expr 										{% t.binaryOp("geq") %}
 	| "!" logical_expr 															{% t.unaryOp("neg") %}
-	| operation																	{% id %}
+	| value_expr																{% id %}
 
 spe_expr ->
-	operation __nl "in" __ expr 												{% t.binaryOp("in") %}
-	| operation __nl "??" __ operation 											{% t.binaryOp("null_coalescing") %}
-	| expr __nl "?" __ expr __nl ":" __ expr									{% data => ({ type: "ternary", condition: t.first(data), ifTrue: t.mid(data), ifFalse: t.last(data) }) %}
+	value_expr __nl "in" __ value_expr 											{% t.binaryOp("in") %}
+	| value_expr __nl "??" __ value_expr 										{% t.binaryOp("null_coalescing") %}
+	| value_expr __nl "?" __ value_expr __nl ":" __ value_expr					{% data => ({ type: "ternary", condition: t.first(data), ifTrue: t.mid(data), ifFalse: t.last(data) }) %}
