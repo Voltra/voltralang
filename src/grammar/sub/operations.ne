@@ -10,18 +10,18 @@ operation -> assign_expr 														{% id %}
 
 
 assign_expr ->
-	fully_qualified_name __nl "=" __ operation 									{% t.binaryOp("assign") %}
-	| fully_qualified_name __nl "+=" __ operation 								{% t.binaryOp("plus_eq") %}
-	| fully_qualified_name __nl "-=" __ operation 								{% t.binaryOp("minus_eq") %}
-	| fully_qualified_name __nl "*=" __ operation 								{% t.binaryOp("times_eq") %}
-	| fully_qualified_name __nl "/=" __ operation 								{% t.binaryOp("div_eq") %}
-	| fully_qualified_name __nl "%=" __ operation 								{% t.binaryOp("mod_eq") %}
-	| fully_qualified_name __nl "&=" __ operation 								{% t.binaryOp("bitwise_and_eq") %}
-	| fully_qualified_name __nl "|=" __ operation 								{% t.binaryOp("bitwise_or_eq") %}
-	| fully_qualified_name __nl "^=" __ operation 								{% t.binaryOp("bitwise_xor_eq") %}
-	| fully_qualified_name __nl "~=" __ operation 								{% t.binaryOp("bitwise_neg_eq") %}
-	| fully_qualified_name __nl "&&=" __ operation 								{% t.binaryOp("land_eq") %}
-	| fully_qualified_name __nl "||=" __ operation 								{% t.binaryOp("lor_eq") %}
+	fully_qualified_name __nl "=" __ value_expr 								{% t.binaryOp("assign") %}
+	| fully_qualified_name __nl "+=" __ value_expr 								{% t.binaryOp("plus_eq") %}
+	| fully_qualified_name __nl "-=" __ value_expr 								{% t.binaryOp("minus_eq") %}
+	| fully_qualified_name __nl "*=" __ value_expr 								{% t.binaryOp("times_eq") %}
+	| fully_qualified_name __nl "/=" __ value_expr 								{% t.binaryOp("div_eq") %}
+	| fully_qualified_name __nl "%=" __ value_expr 								{% t.binaryOp("mod_eq") %}
+	| fully_qualified_name __nl "&=" __ value_expr 								{% t.binaryOp("bitwise_and_eq") %}
+	| fully_qualified_name __nl "|=" __ value_expr 								{% t.binaryOp("bitwise_or_eq") %}
+	| fully_qualified_name __nl "^=" __ value_expr 								{% t.binaryOp("bitwise_xor_eq") %}
+	| fully_qualified_name __nl "~=" __ value_expr 								{% t.binaryOp("bitwise_neg_eq") %}
+	| fully_qualified_name __nl "&&=" __ value_expr 							{% t.binaryOp("land_eq") %}
+	| fully_qualified_name __nl "||=" __ value_expr 							{% t.binaryOp("lor_eq") %}
 	| "!!=" fully_qualified_name 												{% t.unaryOp("unary_neg_eq") %}
 
 
@@ -38,15 +38,15 @@ mult_expr ->
 
 pow_expr ->
 	pow_expr __nl "**" __ bit_expr 												{% t.binaryOp("pow") %}
-	| "-" bit_expr 																{% t.unaryOp("unary_minus") %}
-	| "+" bit_expr 																{% t.unaryOp("unary_plus") %}
+	| "-" value_expr 															{% t.unaryOp("unary_minus") %}
+	| "+" value_expr 															{% t.unaryOp("unary_plus") %}
 	| bit_expr 																	{% id %}
 
 bit_expr ->
 	bit_expr __nl "&" __ unary_expr 											{% t.binaryOp("bitwise_and") %}
 	| bit_expr __nl "|" __ unary_expr 											{% t.binaryOp("bitwise_or") %}
 	| bit_expr __nl "^" __ unary_expr 											{% t.binaryOp("bitwise_xor") %}
-	| "~" unary_expr 															{% t.unaryOp("bitwise_neg") %}
+	| "~" value_expr 															{% t.unaryOp("bitwise_neg") %}
 	| unary_expr 																{% id %}
 
 unary_expr ->
@@ -64,7 +64,7 @@ logical_expr ->
 	| logical_expr __nl ">" __ value_expr 										{% t.binaryOp("gt") %}
 	| logical_expr __nl "<=" __ value_expr 										{% t.binaryOp("leq") %}
 	| logical_expr __nl ">=" __ value_expr 										{% t.binaryOp("geq") %}
-	| "!" logical_expr 															{% t.unaryOp("neg") %}
+	| "!" value_expr 															{% t.unaryOp("neg") %}
 
 spe_expr ->
 	value_expr __nl "in" __ value_expr 											{% t.binaryOp("in") %}

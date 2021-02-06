@@ -93,7 +93,8 @@ const tokens = {
 		type: moo.keywords(keyword),
 	},
 	operator,
-	comment: /(?:\/\/.*?$|\/\*(?!\*\/)*?\*\/)/,
+	comment: /\/\/.*?$/,
+	// comment: /(?:\/\/.*?$|\/\*(?!\*\/)*?\*\/)/,
 	numberLiteral: /(?:-?\d+(?:\.\d*?)?|-?\d*?\.)(?:e-?\d+)?/,
 	stringLiteral: [
 		{
