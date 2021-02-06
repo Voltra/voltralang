@@ -1,12 +1,12 @@
 @include "./calls.ne" # func_call, arg_list, ufc, method_call
 
 operation -> assign_expr 														{% id %}
-	| sum_expr 																	{% id %}
-	| logical_expr 																{% id %}
-	| spe_expr 																	{% id %}
-	| func_call																	{% id %}
-	| ufc																		{% id %}
-	| method_call																{% id %}
+	# | sum_expr 																	{% id %}
+	# | logical_expr 																{% id %}
+	# | spe_expr 																	{% id %}
+	# | func_call																	{% id %}
+	# | ufc																		{% id %}
+	# | method_call																{% id %}
 
 
 assign_expr ->
