@@ -5,22 +5,14 @@ const { hideBin } = require("yargs/helpers");
 const fs = require("fs-extra");
 const path = require("path");
 
+const { writeJson } = require("./json");
+const { dumpTable, isParseError, hasPosition } = require("./helpers");
+const { AmbiguousGrammar, ParserFailure } = require("./errors");
+
 const parser = new Parser(
 	Grammar.fromCompiled(grammar),
 	{ keepHistory: true, },
 );
-
-const isParseError = e => ["offset", "token"].every(key => key in e) && !!e.token;
-const hasPosition = token => ["line", "col", "type"].every(key => key in token);
-
-const AmbiguousGrammar = class extends Error{
-	constructor(results){
-		super();
-		this.results = results;
-	}
-};
-const ParserFailure = class extends Error{};
-
 
 const parse = content => {
 	parser.feed(content);
@@ -35,40 +27,6 @@ const parse = content => {
 	}
 };
 
-function refReplacer() {
-	let m = new Map(), v= new Map(), init = null;
-
-	return function(field, value) {
-		let p= m.get(this) + (Array.isArray(this) ? `[${field}]` : '.' + field); 
-		let isComplex = value===Object(value)
-
-		if (isComplex) m.set(value, p);  
-
-		let pp = v.get(value)||'';
-		let path = p.replace(/undefined\.\.?/,'');
-		let val = pp ? `#REF:${pp[0]=='[' ? '$':'$.'}${pp}` : value;
-
-		!init ? (init=value) : (val===init ? val="#REF:$" : 0);
-		if(!pp && isComplex)
-			v.set(value, path);
-
-		return val;
-	}
-}
-
-const writeJson = async (jsonable, output, circular = false) => {
-	const repl = circular ? refReplacer() : null;
-	const json = JSON.stringify(jsonable, repl, 4);
-	await fs.writeFile(output, json, "utf8");
-};
-
-const dumpTable = async output => {
-	await writeJson(
-		parser.table.map(x => Object.keys(x.completed)),
-		`${output}.error.json`,
-		true
-	);
-};
 
 const parseFile = async ({ verbose, file, output }) => {
 	try{
@@ -85,7 +43,7 @@ const parseFile = async ({ verbose, file, output }) => {
 			}else
 				console.error(token);
 		}else if(e instanceof AmbiguousGrammar){
-			await dumpTable(output);
+			await dumpTable(parser, output);
 
 			e.results.forEach(async (ast, i) => {
 				await writeJson(ast, `${output}.${i}.error.json`);

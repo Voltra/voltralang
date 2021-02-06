@@ -9,3 +9,9 @@ myFunc(
 	andNotJustOne,
 	alsoTrailingComma,
 )
+
+myFunc(
+	withVeryLongParamNames,
+	andNotJustOne,
+	alsoNoTrailingComma
+)

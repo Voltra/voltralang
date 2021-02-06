@@ -10,7 +10,7 @@
 ####################################################################################
 # Sub parts
 ####################################################################################
-@include "./sub/operations.ne" # operation, unary_operation, binary_operation
+@include "./sub/operations.ne" # operation
 @include "./sub/operators.ne" # operator
 @include "./sub/calls.ne" # func_call, arg_list, ufc, method_call
 @include "./sub/func.ne" # params, lambda, anonymous_func, computed_property, param_list
