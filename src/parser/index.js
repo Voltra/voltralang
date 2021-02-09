@@ -13,6 +13,7 @@ const { dumpTable, isParseError, hasPosition } = require("./helpers");
 const { AmbiguousGrammar, ParserFailure } = require("./errors");
 
 const parser = nm(moo.compile(tokens));
+parser.parser.options.keepHistory = true;
 
 const parse = content => {
 	parser.feed(content);
@@ -47,9 +48,12 @@ const parseFile = async ({ verbose, file, output }) => {
 		}else if(e instanceof AmbiguousGrammar){
 			await dumpTable(parser, output);
 
-			e.results.forEach(async (ast, i) => {
+			const results = e.results.length < 4 ? e.results : e.results.slice(0, 3);
+
+			for(const i in results){
+				const ast = results[i];
 				await writeJson(ast, `${output}.${i}.error.json`);
-			});
+			}
 		}else
 			console.error(e);
 	}

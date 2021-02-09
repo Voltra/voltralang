@@ -6,7 +6,6 @@
 	"scripts": {
 		"gen:grammar": "nearleyc ./src/grammar/index.ne -o ./src/grammar/index.js",
 		"gen:railroad": "nearley-railroad ./src/grammar/index.ne -o ./docs/grammar.html",
-		"gen:rr": "nearley-rr -d ./src/grammar/index.js ./docs/grammar.html",
 		"parse": "node ./src/parser parse",
 		"repl:grammar": "nearley-test ./src/grammar/index.js"
 	},
@@ -21,7 +20,6 @@
 	},
 	"homepage": "https://github.com/Voltra/voltralang#readme",
 	"dependencies": {
-		"better-nearley-railroad": "^1.3.0",
 		"fs-extra": "^9.1.0",
 		"moo": "^0.5.1",
 		"nearley": "^2.20.1",
@@ -31,6 +29,6 @@
 	"devDependencies": {
 		"@types/moo": "^0.5.3",
 		"@types/nearley": "^2.11.1",
-		"@types/yargs": "^15.0.12"
+		"@types/yargs": "^15.0.13"
 	}
 }
