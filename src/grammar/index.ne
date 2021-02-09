@@ -1,16 +1,26 @@
 @{%
-	const { lexer } = require("../lexer");
+	// const { lexer } = require("../lexer");
 	const t = require("./transform");
+
+	const nm = require("nearley-moo");
+	const { tokens } = require("../lexer/tokens");
+	
+	nm(tokens);
+
+	/*const keys = Array.from(Reflect.ownKeys(global))
+					.filter(x => typeof x === "string");
+
+	console.log(keys);*/
 %}
 
-@lexer lexer
+# @lexer lexer
 
 
 ####################################################################################
 # Sub parts
 ####################################################################################
 @include "./sub/operations.ne" # operation
-@include "./sub/operators.ne" # operator
+@include "./sub/operators.ne" # operator, operator_name
 @include "./sub/func.ne" # params, lambda, anonymous_func, computed_property, param_list
 @include "./sub/controlFlow.ne" # throw_stmt, if_stmt, while_stmt, do_while_stmt
 @include "./sub/specialLiterals.ne" # arrayLiteral, objectLiteral, nullLiteral
@@ -43,8 +53,8 @@ __nl -> (%WS|%NL):+
 ident -> %ident																{% id %}
 numberLiteral -> %numberLiteral												{% id %}
 stringLiteral -> %stringLiteral 											{% id %}
-booleanLiteral -> ("true"|"false") 											{% id %}
-function_prefix -> ("fn"|"function") 										{% id %}
+booleanLiteral -> (%kWtrue|%kWfalse) 										{% id %}
+function_prefix -> (%kWfn|%kWfunction) 										{% id %}
 
 
 
@@ -62,9 +72,9 @@ literal -> numberLiteral													{% id %}
 	| arrayLiteral 															{% id %}
 	| objectLiteral 														{% id %}
 
-operator_name -> "operator\"" operator "\""									{% data => ({ type: "operator_name", operator: t.mid(data) }) %}
 
-fully_qualified_name -> (ident "::"):*
+
+fully_qualified_name -> (ident %ns):*
 	(ident {% id %} | operator_name {% id %}) 								{% data => ({ type: "fqn", path: [...t.mapFirst(t.first)(data), t.last(data)] }) %}
 
 
@@ -75,11 +85,12 @@ fully_qualified_name -> (ident "::"):*
 expr -> value_expr 															{% id %}
 	| no_value_expr 														{% id %}
 
-value_expr -> literal														{% id %}
+value_expr -> simple_value													{% id %}
+	| operation																{% id %}
+
+simple_value -> literal {% id %}
 	| fully_qualified_name													{% id %}
 	| paren_expr															{% id %}
-	| operation																{% id %}
-	| match_expr															{% id %}
 	| expr_statement														{% id %}
 
 no_value_expr -> expr_block													{% id %}
@@ -91,10 +102,11 @@ expr_statement -> throw_stmt												{% id %}
 statement -> if_stmt														{% id %}
 	| while_stmt															{% id %}
 	| do_while_stmt															{% id %}
+	| expr _ %semi 															{% t.first %}
 
 
-paren_expr -> "(" _nl value_expr _nl ")"									{% data => ({ type: "paren_expr", expr: t.mid(data) }) %}
-expr_block -> "{" _nl (expr __nl):* "}"										{% data => ({ type: "expr_block", exprs: t.at(2)(data).map(t.first) }) %}
-expression_body -> __ "=>" _nl expr											{% data => ({ type: "expression_body", body: t.last(data) }) %}
-computed_body -> __ "~>" _nl expr											{% data => ({ type: "computed_body", body: t.last(data) }) %}
+paren_expr -> %lparen _nl value_expr _nl %rparen							{% data => ({ type: "paren_expr", expr: t.mid(data) }) %}
+expr_block -> %lcurly _nl (expr %semi:? __nl):* %rcurly								{% data => ({ type: "expr_block", exprs: t.beforeLast(data).map(t.first) }) %}
+expression_body -> __ %fat_arrow _nl expr									{% data => ({ type: "expression_body", body: t.last(data) }) %}
+computed_body -> __ %wavy_arrow _nl expr									{% data => ({ type: "computed_body", body: t.last(data) }) %}
 

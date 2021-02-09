@@ -22,6 +22,7 @@
 		"fs-extra": "^9.1.0",
 		"moo": "^0.5.1",
 		"nearley": "^2.20.1",
+		"nearley-moo": "^1.0.2",
 		"yargs": "^17.0.0-candidate.0"
 	},
 	"devDependencies": {

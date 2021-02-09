@@ -1,18 +1,18 @@
-const { Parser, Grammar } = require("nearley");
-const grammar = require("../grammar");
+const moo = require("moo");
+const nearley = require("nearley");
 const yargs = require("yargs/yargs");
 const { hideBin } = require("yargs/helpers");
 const fs = require("fs-extra");
 const path = require("path");
+const grammar = require("../grammar");
+const { tokens } = require("../lexer/tokens");
+const nm = require("nearley-moo").parser(nearley, grammar);
 
 const { writeJson } = require("./json");
 const { dumpTable, isParseError, hasPosition } = require("./helpers");
 const { AmbiguousGrammar, ParserFailure } = require("./errors");
 
-const parser = new Parser(
-	Grammar.fromCompiled(grammar),
-	{ keepHistory: true, },
-);
+const parser = nm(moo.compile(tokens));
 
 const parse = content => {
 	parser.feed(content);
@@ -42,6 +42,8 @@ const parseFile = async ({ verbose, file, output }) => {
 				console.error(`Unexpected ${type} "${token}" at l${line}:c${col}`);
 			}else
 				console.error(token);
+
+			console.error(e);
 		}else if(e instanceof AmbiguousGrammar){
 			await dumpTable(parser, output);
 
@@ -62,7 +64,7 @@ const main = argv => {
 			default: "index.voltra",
 		}).positional("output", {
 			describe: "the output file",
-			default: "voltra.ast",
+			default: "index.ast",
 		}).coerce(["file", "output"], path.resolve);
 	}, parseFile)
 	.strictCommands()

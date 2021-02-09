@@ -1,51 +1,55 @@
 const moo = require("moo");
 
-const operator = [
-	".", // object property
-	"<", // less than, lcaret
-	">", // greater than, rcaret
-	"<=", // leq
-	">=", // geq
-	"->",
-	"=>", // expression body, 
-	"~>",
-	"||", // logical or
-	"|", // bitwise or, pipe
-	"&&", // logical and
-	"&", // bitwise and
-	"!", // logical not
-	"~", // bitwise not
-	"^", // xor
-	"+", // unary plus, plus
-	"-", // unary minus, minus
-	"*", // mult
-	"/", // div
-	"%", // mod
-	"==", // logical equivalence
-	"!=", // logical inequivalence
-	"=", // equal
-	"::", // namespace separator
-	"@", // unified function call operator, annotation
-	"?", // for ternary and optional chaining,
-	"??", // null coalescing
-	"+=",
-	"-=",
-	"*=",
-	"/=",
-	"%=",
-	"&=",
-	"|=",
-	"^=",
-	"~=",
-	"&&=",
-	"||=",
-	"!!=", // unary boolean negate
-	"++", // unary pre/post increment
-	"--", // unary pre/post decrement
-	"**", // pow
-];
+const operators = {
+	eq: "==", // logical equivalence
+	neq: "!=", // logical inequivalence
+	ns: "::", // namespace separator
+	ufc: "@", // unified function call operator, annotation
+	null_coal: "??", // null coalescing
+	plus_eq: "+=",
+	minus_eq: "-=",
+	times_eq: "*=",
+	div_eq: "/=",
+	mod_eq: "%=",
+	bitwise_and_eq: "&=",
+	bitwise_or_eq: "|=",
+	bitwise_xor_eq: "^=",
+	// "~=",
+	land_eq: "&&=",
+	lor_eq: "||=",
+	unary_neg_eq: "!!=", // unary boolean negate
+	incr: "++", // unary pre/post increment
+	decr: "--", // unary pre/post decrement
+	pow: "**", // pow
+	
+	dot: ".", // object property
+	lt: "<", // less than, lcaret
+	gt: ">", // greater than, rcaret
+	leq: "<=", // leq
+	geq: ">=", // geq
+	arrow: "->",
+	fat_arrow: "=>", // expression body, 
+	wavy_arrow: "~>",
+	lor: "||", // logical or
+	bitwise_or: "|", // bitwise or, pipe
+	land: "&&", // logical and
+	bitwise_and: "&", // bitwise and
+	neg: "!", // logical not
+	bitwise_neg: "~", // bitwise not
+	bitwise_xor: "^", // xor
+	plus: "+", // unary plus, plus
+	minus: "-", // unary minus, minus
+	times: "*", // mult
+	div: "/", // div
+	mod: "%", // mod
+	assign: "=", // equal
+	question: "?", // for ternary and optional chaining,
+	colon: ":", // for ternary
+};
 
-const keyword = [
+
+
+const keywordArr = [
 	"operator", // for operator declaration
 	"in", // pseudo operator : for key in obj, item in array
 	"if",
@@ -80,7 +84,9 @@ const keyword = [
 	"null",
 	"_",
 	"this",
-].reduce((acc, kw) => ({ ...acc, [kw]: kw }), {});
+];
+
+const keyword = keywordArr.reduce((acc, kw) => ({ ...acc, [`kW${kw}`]: kw }), {});
 
 const tokens = {
 	WS: /[ \t]/,
@@ -92,7 +98,8 @@ const tokens = {
 		match: /[a-zA-Z_$]\w*/,
 		type: moo.keywords(keyword),
 	},
-	operator,
+	...keyword,
+	...operators,
 	comment: /\/\/.*?$/,
 	// comment: /(?:\/\/.*?$|\/\*(?!\*\/)*?\*\/)/,
 	numberLiteral: /(?:-?\d+(?:\.\d*?)?|-?\d*?\.)(?:e-?\d+)?/,
@@ -111,7 +118,6 @@ const tokens = {
 	rcurly: "}",
 	comma: ",",
 	semi: ";",
-	colon: ":",
 };
 
 const shouldPass = {
@@ -143,7 +149,7 @@ const shouldPass = {
 
 
 module.exports = {
-	operator,
+	operators,
 	keyword,
 	tokens,
 	shouldPass,

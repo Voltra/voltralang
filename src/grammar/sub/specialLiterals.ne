@@ -1,6 +1,6 @@
-arrayLiteral -> "[" _nl arg_list _nl "]" 										{% data => ({ type: "arrayLiteral", items: t.mid(data) }) %}
+arrayLiteral -> %lbracket _nl arg_list _nl %rbracket 										{% data => ({ type: "arrayLiteral", items: t.mid(data) }) %}
 
-objectLiteral -> "{" __nl "}" 													{% data => ({ type: "objectLiteral", entries: t.mid(data) }) %}
+objectLiteral -> %lcurly __nl %rcurly 													{% data => ({ type: "objectLiteral", entries: t.mid(data) }) %}
 # TODO: Actual object literal
 
-nullLiteral -> "null"															{% id %}
+nullLiteral -> %kWnull															{% id %}
