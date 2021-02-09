@@ -21,12 +21,12 @@ const operators = {
 	incr: "++", // unary pre/post increment
 	decr: "--", // unary pre/post decrement
 	pow: "**", // pow
+	leq: "<=", // leq
+	geq: ">=", // geq
 	
 	dot: ".", // object property
 	lt: "<", // less than, lcaret
 	gt: ">", // greater than, rcaret
-	leq: "<=", // leq
-	geq: ">=", // geq
 	arrow: "->",
 	fat_arrow: "=>", // expression body, 
 	wavy_arrow: "~>",
@@ -78,6 +78,7 @@ const keywordArr = [
 	"fn",
 	"function",
 	"throw",
+	"return",
 
 	"true",
 	"false",

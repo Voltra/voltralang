@@ -47,7 +47,7 @@ aze ^= 1
 aze &&= true
 aze ||= true
 
-2**4
+2 ** 4
 
 a ? b : c
 

@@ -88,7 +88,7 @@ expr -> value_expr 															{% id %}
 value_expr -> simple_value													{% id %}
 	| operation																{% id %}
 
-simple_value -> literal {% id %}
+simple_value -> literal 													{% id %}
 	| fully_qualified_name													{% id %}
 	| paren_expr															{% id %}
 	| expr_statement														{% id %}
@@ -98,6 +98,7 @@ no_value_expr -> expr_block													{% id %}
 
 
 expr_statement -> throw_stmt												{% id %}
+	| return_stmt 															{% id %}
 
 statement -> if_stmt														{% id %}
 	| while_stmt															{% id %}
@@ -106,7 +107,7 @@ statement -> if_stmt														{% id %}
 
 
 paren_expr -> %lparen _nl value_expr _nl %rparen							{% data => ({ type: "paren_expr", expr: t.mid(data) }) %}
-expr_block -> %lcurly _nl (expr %semi:? __nl):* %rcurly								{% data => ({ type: "expr_block", exprs: t.beforeLast(data).map(t.first) }) %}
+expr_block -> %lcurly _nl (expr %semi:? __nl):* %rcurly						{% data => ({ type: "expr_block", exprs: t.beforeLast(data).map(t.first) }) %}
 expression_body -> __ %fat_arrow _nl expr									{% data => ({ type: "expression_body", body: t.last(data) }) %}
 computed_body -> __ %wavy_arrow _nl expr									{% data => ({ type: "computed_body", body: t.last(data) }) %}
 
