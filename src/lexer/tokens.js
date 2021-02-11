@@ -23,12 +23,12 @@ const operators = {
 	pow: "**", // pow
 	leq: "<=", // leq
 	geq: ">=", // geq
-	
+
 	dot: ".", // object property
 	lt: "<", // less than, lcaret
 	gt: ">", // greater than, rcaret
 	arrow: "->",
-	fat_arrow: "=>", // expression body, 
+	fat_arrow: "=>", // expression body,
 	wavy_arrow: "~>",
 	lor: "||", // logical or
 	bitwise_or: "|", // bitwise or, pipe

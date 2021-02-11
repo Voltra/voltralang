@@ -4,7 +4,7 @@
 
 	const nm = require("nearley-moo");
 	const { tokens } = require("../lexer/tokens");
-	
+
 	nm(tokens);
 
 	/*const keys = Array.from(Reflect.ownKeys(global))
