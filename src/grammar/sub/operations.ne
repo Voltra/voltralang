@@ -1,7 +1,18 @@
 operation -> assign_expr 														{% id %}
-	| sum_expr 																	{% id %}
-	| logical_expr 																{% id %}
+	| _numeric_operation 														{% id %}
+	| _logical_operation 														{% id %}
 	| spe_expr 																	{% id %}
+
+
+_numeric_operation -> sum_expr 													{% id %} 
+	| mult_expr 																{% id %}
+	| pow_expr 																	{% id %}
+	| bit_expr 																	{% id %}
+	| unary_expr 																{% id %}
+
+_logical_operation -> disjonction 												{% id %}
+	| conjonction 																{% id %}
+	| logical_unary 															{% id %}
 
 
 assign_expr ->
@@ -22,26 +33,26 @@ assign_expr ->
 sum_expr ->
 	mult_expr __nl %plus __ sum_expr 											{% t.binaryOp("plus") %}
 	| mult_expr __nl %minus __ sum_expr 										{% t.binaryOp("minus") %}
-	| mult_expr 																{% id %}
+	# | mult_expr 																{% id %}
 
 mult_expr ->
 	pow_expr __nl %times __  mult_expr											{% t.binaryOp("times") %}
 	| pow_expr __nl %div __ mult_expr 											{% t.binaryOp("div") %}
 	| pow_expr __nl %mod __ mult_expr 											{% t.binaryOp("mod") %}
-	| pow_expr 																	{% id %}
+	# | pow_expr 																	{% id %}
 
 pow_expr ->
 	bit_expr __nl %pow __ pow_expr 												{% t.binaryOp("pow") %}
 	| %minus atomic_value 														{% t.unaryOp("unary_minus") %}
 	| %plus atomic_value 														{% t.unaryOp("unary_plus") %}
-	| bit_expr 																	{% id %}
+	# | bit_expr 																	{% id %}
 
 bit_expr ->
 	unary_expr __nl %bitwise_and __ bit_expr 									{% t.binaryOp("bitwise_and") %}
 	| unary_expr __nl %bitwise_or __ bit_expr 									{% t.binaryOp("bitwise_or") %}
 	| unary_expr __nl %bitwise_xor __ bit_expr 									{% t.binaryOp("bitwise_xor") %}
 	| %bitwise_neg simple_value 												{% t.unaryOp("bitwise_neg") %}
-	| unary_expr 																{% id %}
+	# | unary_expr 																{% id %}
 
 unary_expr ->
 	%incr fully_qualified_name 													{% t.unaryOp("pre_increment") %}
@@ -49,16 +60,15 @@ unary_expr ->
 	| fully_qualified_name %incr 												{% t.unaryOpPost("post_increment") %}
 	| fully_qualified_name %decr 												{% t.unaryOpPost("post_decrement") %}
 	# | simple_value 																{% id %}
-	| simple_value 																{% data => ({ type: "sv_unary_expr", data: id(data) }) %}
+	# | simple_value 																{% data => ({ type: "sv_unary_expr", data: id(data) }) %}
 
-logical_expr -> disjonction 													{% id %}
 
 
 disjonction -> conjonction __nl %lor __ disjonction								{% t.binaryOp("lor") %}
-	| conjonction 																{% id %}
+	# | conjonction 																{% id %}
 
-conjonction -> logical_unary__ft __nl %land __  conjonction							{% t.binaryOp("land") %}
-	| logical_unary 															{% id %}
+conjonction -> logical_unary __nl %land __  conjonction							{% t.binaryOp("land") %}
+	# | logical_unary 															{% id %}
 
 logical_unary -> %neg simple_value 												{% t.unaryOp("neg") %}
 	| simple_value __nl %kWin __ simple_value 									{% t.binaryOp("in") %}
@@ -68,11 +78,8 @@ logical_unary -> %neg simple_value 												{% t.unaryOp("neg") %}
 	| simple_value __nl %gt __ simple_value 									{% t.binaryOp("gt") %}
 	| simple_value __nl %leq __ simple_value 									{% t.binaryOp("leq") %}
 	| simple_value __nl %geq __ simple_value 									{% t.binaryOp("geq") %}
-
-logical_unary__ft -> logical_unary 												{% id %}
 	# | simple_value 																{% id %}
-	| simple_value 																{% data => ({ type: "sv_logical_unary", data: id(data) }) %}
-
+	# | simple_value 																{% data => ({ type: "sv_logical_unary", data: id(data) }) %}
 
 
 spe_expr ->
