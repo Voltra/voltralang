@@ -53,8 +53,8 @@ unary_expr ->
 	| %decr fully_qualified_name 												{% t.unaryOp("pre_decrement") %}
 	| fully_qualified_name %incr 												{% t.unaryOpPost("post_increment") %}
 	| fully_qualified_name %decr 												{% t.unaryOpPost("post_decrement") %}
-	# | simple_value 																{% id %}
-	| simple_value 																{% data => ({ type: "sv_unary_expr", data: id(data) }) %}
+	| simple_value 																{% id %}
+	# | simple_value 																{% data => ({ type: "sv_unary_expr", data: id(data) }) %}
 
 
 logical_expr -> disjonction 													{% id %}
@@ -66,16 +66,16 @@ disjonction -> conjonction __nl %lor __ disjonction								{% t.binaryOp("lor") 
 conjonction -> logical_unary __nl %land __  conjonction							{% t.binaryOp("land") %}
 	| logical_unary 															{% id %}
 
-logical_unary -> %neg simple_value 												{% t.unaryOp("neg") %}
-	| simple_value __nl %kWin __ simple_value 									{% t.binaryOp("in") %}
-	| simple_value __nl %eq __ simple_value 									{% t.binaryOp("eq") %}
-	| simple_value __nl %neq __ simple_value 									{% t.binaryOp("neq") %}
-	| simple_value __nl %lt __ simple_value 									{% t.binaryOp("lt") %}
-	| simple_value __nl %gt __ simple_value 									{% t.binaryOp("gt") %}
-	| simple_value __nl %leq __ simple_value 									{% t.binaryOp("leq") %}
-	| simple_value __nl %geq __ simple_value 									{% t.binaryOp("geq") %}
-	# | simple_value 																{% id %}
-	| simple_value 																{% data => ({ type: "sv_logical_unary", data: id(data) }) %}
+logical_unary -> %neg value_expr 												{% t.unaryOp("neg") %}
+	| value_expr __nl %kWin __ value_expr 										{% t.binaryOp("in") %}
+	| value_expr __nl %eq __ value_expr 										{% t.binaryOp("eq") %}
+	| value_expr __nl %neq __ value_expr 										{% t.binaryOp("neq") %}
+	| value_expr __nl %lt __ value_expr 										{% t.binaryOp("lt") %}
+	| value_expr __nl %gt __ value_expr 										{% t.binaryOp("gt") %}
+	| value_expr __nl %leq __ value_expr 										{% t.binaryOp("leq") %}
+	| value_expr __nl %geq __ value_expr 										{% t.binaryOp("geq") %}
+	# | value_expr 																{% id %}
+	# | simple_value 																{% data => ({ type: "sv_logical_unary", data: id(data) }) %}
 
 
 
