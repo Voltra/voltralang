@@ -21,7 +21,7 @@ const parse = content => {
 	if(parser.results.length === 1){
 		return parser.results[0];
 	}else if(parser.results.length > 1){
-		console.warn("Grammar is ambiguous");
+		console.warn(`Grammar is ambiguous : ${parser.results.length} outcomes`);
 		throw new AmbiguousGrammar(parser.results);
 	}else{
 		throw new ParserFailure();

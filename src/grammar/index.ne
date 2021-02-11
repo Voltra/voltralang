@@ -19,6 +19,7 @@
 ####################################################################################
 # Sub parts
 ####################################################################################
+@include "./sub/calls.ne" # func_call, arg_list, ufc, method_call
 @include "./sub/operations.ne" # operation
 @include "./sub/operators.ne" # operator, operator_name
 @include "./sub/func.ne" # params, lambda, anonymous_func, computed_property, param_list
@@ -86,12 +87,17 @@ expr -> value_expr (_ %semi):? 												{% id %}
 	| no_value_expr (_ %semi):? 											{% id %}
 
 value_expr -> operation														{% id %}
-	| paren_expr															{% id %}
 	| simple_value															{% id %}
 	| expr_statement														{% id %}
 
-simple_value -> literal 													{% id %}
+simple_value -> atomic_value 												{% id %}
+	| paren_expr															{% id %}
+
+atomic_value -> literal 													{% id %}
 	| fully_qualified_name													{% id %}
+	| func_call																{% id %}
+	| ufc																	{% id %}
+	| method_call															{% id %}
 
 no_value_expr -> expr_block													{% id %}
 	| statement 															{% id %}
