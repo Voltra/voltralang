@@ -51,14 +51,13 @@ unary_expr ->
 	# | simple_value 																{% id %}
 	| simple_value 																{% data => ({ type: "sv_unary_expr", data: id(data) }) %}
 
-
 logical_expr -> disjonction 													{% id %}
 
 
 disjonction -> conjonction __nl %lor __ disjonction								{% t.binaryOp("lor") %}
 	| conjonction 																{% id %}
 
-conjonction -> logical_unary __nl %land __  conjonction							{% t.binaryOp("land") %}
+conjonction -> logical_unary__ft __nl %land __  conjonction							{% t.binaryOp("land") %}
 	| logical_unary 															{% id %}
 
 logical_unary -> %neg simple_value 												{% t.unaryOp("neg") %}
@@ -69,6 +68,8 @@ logical_unary -> %neg simple_value 												{% t.unaryOp("neg") %}
 	| simple_value __nl %gt __ simple_value 									{% t.binaryOp("gt") %}
 	| simple_value __nl %leq __ simple_value 									{% t.binaryOp("leq") %}
 	| simple_value __nl %geq __ simple_value 									{% t.binaryOp("geq") %}
+
+logical_unary__ft -> logical_unary 												{% id %}
 	# | simple_value 																{% id %}
 	| simple_value 																{% data => ({ type: "sv_logical_unary", data: id(data) }) %}
 
