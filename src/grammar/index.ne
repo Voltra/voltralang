@@ -99,6 +99,8 @@ atomic_value -> literal 													{% id %}
 	| ufc																	{% id %}
 	| method_call															{% id %}
 
+
+
 no_value_expr -> expr_block													{% id %}
 	| statement 															{% id %}
 
@@ -113,6 +115,9 @@ statement -> if_stmt														{% id %}
 
 paren_expr -> %lparen _nl value_expr _nl %rparen							{% data => ({ type: "paren_expr", expr: t.mid(data) }) %}
 expr_block -> %lcurly _nl (expr __nl):* %rcurly								{% data => ({ type: "expr_block", exprs: t.beforeLast(data).map(t.first) }) %}
-expression_body -> __ %fat_arrow _nl expr									{% data => ({ type: "expression_body", body: t.last(data) }) %}
-computed_body -> __ %wavy_arrow _nl expr									{% data => ({ type: "computed_body", body: t.last(data) }) %}
+mini_func_body -> value_expr 												{% id %}
+	| expr_block 															{% id %}
+
+expression_body -> __ %fat_arrow __nl mini_func_body						{% data => ({ type: "expression_body", body: t.last(data) }) %}
+computed_body -> __ %wavy_arrow __nl mini_func_body							{% data => ({ type: "computed_body", body: t.last(data) }) %}
 

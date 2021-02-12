@@ -1,4 +1,4 @@
-params -> %lparen _nl param_list _nl %rparen 									{% t.mid %}
+params -> %lparen _nl param_list _nl %rparen 							{% t.mid %}
 		| ident															{% t.id %}
 
 lambda -> params expression_body										{% data => ({ type: "lambda", params: t.first(data), body: t.last(data) }) %}
@@ -8,4 +8,4 @@ anonymous_func -> function_prefix params expr_block						{% data => ({ type: "an
 computed_property -> ident computed_body 								{% data => ({ type: "computed_property", property: t.first(data), body: t.last(data) }) %}
 
 param_list -> null 														{% () => ({ type: "param_list", params: [] }) %}
-		| ident (_ %comma _ ident):+ (_ %comma _):?							{% data => ({ type: "param_list", params: [t.first(data), ...t.second(data).map(t.last)] }) %}
+		| ident (_ %comma _ ident):+ (_ %comma _):?						{% data => ({ type: "param_list", params: [t.first(data), ...t.second(data).map(t.last)] }) %}

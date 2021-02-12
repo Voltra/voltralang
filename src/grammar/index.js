@@ -18,8 +18,12 @@ function id(x) { return x[0]; }
 var grammar = {
     Lexer: undefined,
     ParserRules: [
-    {"name": "func_call", "symbols": ["simple_value", "func_args"], "postprocess": data => ({ type: "func_call", func: t.first(data), args: t.last(data) })},
-    {"name": "func_args", "symbols": [lparen, "_", "arg_list", "_", rparen], "postprocess": t.mid},
+    {"name": "callable", "symbols": ["fully_qualified_name"], "postprocess": id},
+    {"name": "callable", "symbols": ["func_call"], "postprocess": id},
+    {"name": "callable", "symbols": ["ufc"], "postprocess": id},
+    {"name": "callable", "symbols": ["method_call"], "postprocess": id},
+    {"name": "func_call", "symbols": ["callable", "func_args"], "postprocess": data => ({ type: "func_call", func: t.first(data), args: t.last(data) })},
+    {"name": "func_args", "symbols": [lparen, "_nl", "arg_list", "_nl", rparen], "postprocess": t.mid},
     {"name": "arg_list", "symbols": [], "postprocess": () => ({ type: "arg_list", args: [] })},
     {"name": "arg_list$ebnf$1", "symbols": []},
     {"name": "arg_list$ebnf$1$subexpression$1", "symbols": ["_", comma, "__nl", "value_expr"]},
@@ -28,9 +32,9 @@ var grammar = {
     {"name": "arg_list$ebnf$2", "symbols": ["arg_list$ebnf$2$subexpression$1"], "postprocess": id},
     {"name": "arg_list$ebnf$2", "symbols": [], "postprocess": function(d) {return null;}},
     {"name": "arg_list", "symbols": ["value_expr", "arg_list$ebnf$1", "arg_list$ebnf$2"], "postprocess": data => ({ type: "arg_list", args: [t.first(data), ...t.second(data).map(t.last)] })},
-    {"name": "ufc", "symbols": ["simple_value", ufc, "func_call"], "postprocess": data => ({ type: "ufc", caller: t.first(data), call: t.last(data) })},
-    {"name": "method_call", "symbols": ["simple_value", dot, "ident", "func_args"], "postprocess": data => ({ type: "method_call", object: t.first(data), method: t.beforeLast(data), args: t.last(data) })},
-    {"name": "method_call", "symbols": ["simple_value", lbracket, "_nl", "value_expr", "_nl", rbracket, "func_args"], "postprocess": data => ({ type: "method_call", object: t.first(data), method: data[3], args: t.last(data) })},
+    {"name": "ufc", "symbols": ["callable", ufc, "func_call"], "postprocess": data => ({ type: "ufc", caller: t.first(data), call: t.last(data) })},
+    {"name": "method_call", "symbols": ["callable", dot, "ident", "func_args"], "postprocess": data => ({ type: "method_call", object: t.first(data), method: t.beforeLast(data), args: t.last(data) })},
+    {"name": "method_call", "symbols": ["callable", lbracket, "_nl", "value_expr", "_nl", rbracket, "func_args"], "postprocess": data => ({ type: "method_call", object: t.first(data), method: data[3], args: t.last(data) })},
     {"name": "operation", "symbols": ["assign_expr"], "postprocess": id},
     {"name": "operation", "symbols": ["precendence_operation"], "postprocess": id},
     {"name": "operation", "symbols": ["spe_expr"], "postprocess": id},
@@ -269,8 +273,10 @@ var grammar = {
     {"name": "expr_block$ebnf$1$subexpression$1", "symbols": ["expr", "__nl"]},
     {"name": "expr_block$ebnf$1", "symbols": ["expr_block$ebnf$1", "expr_block$ebnf$1$subexpression$1"], "postprocess": function arrpush(d) {return d[0].concat([d[1]]);}},
     {"name": "expr_block", "symbols": [lcurly, "_nl", "expr_block$ebnf$1", rcurly], "postprocess": data => ({ type: "expr_block", exprs: t.beforeLast(data).map(t.first) })},
-    {"name": "expression_body", "symbols": ["__", fat_arrow, "_nl", "expr"], "postprocess": data => ({ type: "expression_body", body: t.last(data) })},
-    {"name": "computed_body", "symbols": ["__", wavy_arrow, "_nl", "expr"], "postprocess": data => ({ type: "computed_body", body: t.last(data) })}
+    {"name": "mini_func_body", "symbols": ["value_expr"], "postprocess": id},
+    {"name": "mini_func_body", "symbols": ["expr_block"], "postprocess": id},
+    {"name": "expression_body", "symbols": ["__", fat_arrow, "__nl", "mini_func_body"], "postprocess": data => ({ type: "expression_body", body: t.last(data) })},
+    {"name": "computed_body", "symbols": ["__", wavy_arrow, "__nl", "mini_func_body"], "postprocess": data => ({ type: "computed_body", body: t.last(data) })}
 ]
   , ParserStart: "file"
 }
