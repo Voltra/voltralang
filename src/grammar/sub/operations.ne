@@ -1,6 +1,5 @@
 operation -> assign_expr 														{% id %}
-	| sum_expr 																	{% id %}
-	| logical_expr 																{% id %}
+	| precendence_operation 													{% id %}
 	| spe_expr 																	{% id %}
 
 
@@ -19,48 +18,24 @@ assign_expr ->
 	| %unary_neg_eq fully_qualified_name 										{% t.unaryOp("unary_neg_eq") %}
 
 
-sum_expr ->
-	mult_expr __nl %plus __ sum_expr 											{% t.binaryOp("plus") %}
-	| mult_expr __nl %minus __ sum_expr 										{% t.binaryOp("minus") %}
-	| mult_expr 																{% id %}
+precendence_operation -> zero_precedence 										{% id %}
 
-mult_expr ->
-	pow_expr __nl %times __  mult_expr											{% t.binaryOp("times") %}
-	| pow_expr __nl %div __ mult_expr 											{% t.binaryOp("div") %}
-	| pow_expr __nl %mod __ mult_expr 											{% t.binaryOp("mod") %}
-	| pow_expr 																	{% id %}
-
-pow_expr ->
-	bit_expr __nl %pow __ pow_expr 												{% t.binaryOp("pow") %}
-	| %minus atomic_value 														{% t.unaryOp("unary_minus") %}
-	| %plus atomic_value 														{% t.unaryOp("unary_plus") %}
-	| bit_expr 																	{% id %}
-
-bit_expr ->
-	unary_expr __nl %bitwise_and __ bit_expr 									{% t.binaryOp("bitwise_and") %}
-	| unary_expr __nl %bitwise_or __ bit_expr 									{% t.binaryOp("bitwise_or") %}
-	| unary_expr __nl %bitwise_xor __ bit_expr 									{% t.binaryOp("bitwise_xor") %}
-	| %bitwise_neg simple_value 												{% t.unaryOp("bitwise_neg") %}
-	| unary_expr 																{% id %}
-
-unary_expr ->
-	%incr fully_qualified_name 													{% t.unaryOp("pre_increment") %}
-	| %decr fully_qualified_name 												{% t.unaryOp("pre_decrement") %}
-	| fully_qualified_name %incr 												{% t.unaryOpPost("post_increment") %}
-	| fully_qualified_name %decr 												{% t.unaryOpPost("post_decrement") %}
-	# | simple_value 																{% id %}
-	| simple_value 																{% data => ({ type: "sv_unary_expr", data: id(data) }) %}
+zero_precedence ->
+	one_precedence __nl %plus __ zero_precedence 								{% t.binaryOp("plus") %}
+	| one_precedence __nl %minus __ zero_precedence 							{% t.binaryOp("minus") %}
+	| one_precedence __nl %lor __ zero_precedence								{% t.binaryOp("lor") %}
+	| one_precedence 															{% id %}
 
 
-logical_expr -> disjonction 													{% id %}
+one_precedence ->
+	two_precedence __nl %times __  one_precedence								{% t.binaryOp("times") %}
+	| two_precedence __nl %div __ one_precedence 								{% t.binaryOp("div") %}
+	| two_precedence __nl %mod __ one_precedence 								{% t.binaryOp("mod") %}
+	| two_precedence __nl %land __  one_precedence								{% t.binaryOp("land") %}
+	| two_precedence 															{% id %}
 
-disjonction -> conjonction __nl %lor __ disjonction								{% t.binaryOp("lor") %}
-	| conjonction 																{% id %}
-
-conjonction -> logical_unary __nl %land __  conjonction							{% t.binaryOp("land") %}
-	| logical_unary 															{% id %}
-
-logical_unary -> %neg simple_value 												{% t.unaryOp("neg") %}
+two_precedence ->
+	three_precedence __nl %pow __ two_precedence 								{% t.binaryOp("pow") %}
 	| simple_value __nl %kWin __ simple_value 									{% t.binaryOp("in") %}
 	| simple_value __nl %eq __ simple_value 									{% t.binaryOp("eq") %}
 	| simple_value __nl %neq __ simple_value 									{% t.binaryOp("neq") %}
@@ -68,8 +43,24 @@ logical_unary -> %neg simple_value 												{% t.unaryOp("neg") %}
 	| simple_value __nl %gt __ simple_value 									{% t.binaryOp("gt") %}
 	| simple_value __nl %leq __ simple_value 									{% t.binaryOp("leq") %}
 	| simple_value __nl %geq __ simple_value 									{% t.binaryOp("geq") %}
-	# | simple_value 																{% id %}
-	| simple_value 																{% data => ({ type: "sv_logical_unary", data: id(data) }) %}
+	| three_precedence 															{% id %}
+
+three_precedence ->
+	four_precedence __nl %bitwise_and __ three_precedence 						{% t.binaryOp("bitwise_and") %}
+	| four_precedence __nl %bitwise_or __ three_precedence 						{% t.binaryOp("bitwise_or") %}
+	| four_precedence __nl %bitwise_xor __ three_precedence 					{% t.binaryOp("bitwise_xor") %}
+	| four_precedence 															{% id %}
+
+four_precedence ->
+	%incr fully_qualified_name 													{% t.unaryOp("pre_increment") %}
+	| %decr fully_qualified_name 												{% t.unaryOp("pre_decrement") %}
+	| fully_qualified_name %incr 												{% t.unaryOpPost("post_increment") %}
+	| fully_qualified_name %decr 												{% t.unaryOpPost("post_decrement") %}
+	| %minus atomic_value 														{% t.unaryOp("unary_minus") %}
+	| %plus atomic_value 														{% t.unaryOp("unary_plus") %}
+	| %neg simple_value 														{% t.unaryOp("neg") %}
+	| %bitwise_neg simple_value 												{% t.unaryOp("bitwise_neg") %}
+	| simple_value 																{% id %}
 
 
 spe_expr ->

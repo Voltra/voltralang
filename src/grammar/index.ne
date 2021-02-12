@@ -87,7 +87,7 @@ expr -> value_expr (_ %semi):? 												{% id %}
 	| no_value_expr (_ %semi):? 											{% id %}
 
 value_expr -> operation														{% id %}
-	| simple_value															{% id %}
+	# | simple_value															{% id %}
 	| expr_statement														{% id %}
 
 simple_value -> atomic_value 												{% id %}
